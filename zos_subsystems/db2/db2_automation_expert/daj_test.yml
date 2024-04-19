@@ -15,3 +15,12 @@
     - name: show output
       ansible.builtin.debug:
         msg: "{{ _output }}"
+
+    - name: run
+      ansible.builtin.shell:
+        cmd: ifconfig
+      register: _output
+
+    - name: show output
+      ansible.builtin.debug:
+        msg: "{{ _output }}"
