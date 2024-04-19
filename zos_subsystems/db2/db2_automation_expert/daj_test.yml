@@ -1,0 +1,12 @@
+- name: Get list of supported utilities
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ums_server: umsserver.company.com
+    ums_port: 12023
+    ums_ca_path: "path/to/rootca.pem"
+    ums_validate_certs: true
+  tasks:
+    - name: run
+      ansible.builtin.shell:
+        cmd: curl "https://www.showmyip.com/" 
