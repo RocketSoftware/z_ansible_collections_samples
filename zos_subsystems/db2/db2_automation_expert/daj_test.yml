@@ -10,3 +10,8 @@
     - name: run
       ansible.builtin.shell:
         cmd: curl "https://www.showmyip.com/" 
+      register: _output
+
+    - name: show output
+      ansible.builtin.debug:
+        msg: "{{ _output }}"
