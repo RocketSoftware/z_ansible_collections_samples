@@ -1,7 +1,7 @@
-{{ jobcard }}//*
+{{ daj_jobcard }}//*
 //* Db2 utilities execution
-//* Profile Creator : {{ profile_creator }}
-//* Profile name    : {{ profile_name }}
+//* Profile Creator : {{ daj_profile_creator }}
+//* Profile name    : {{ daj_profile_name }}
 //*
 //* Playbook name : {{ ansible_play_name }}
 //* Remote user   : {{ ansible_user }}
@@ -65,12 +65,12 @@
 //SYSPROC  DD DSN=RSTEST.DAJ110.CLIST,DISP=SHR                
 //STEPLIB  DD DSN=RSDEMO.DAJ110.IBMTAPE.SDAJLOAD,DISP=SHR     
 //         DD DSN=RSDEMO.DAJ110.IBMTAPE.SFECLOAD,DISP=SHR     
-//         DD DSN={{ sdsnexit }},DISP=SHR                            
-//         DD DSN={{ sdsnload }},DISP=SHR                            
+//         DD DSN={{ daj_sdsnexit }},DISP=SHR                            
+//         DD DSN={{ daj_sdsnload }},DISP=SHR                            
 //ISPLLIB  DD DSN=RSDEMO.DAJ110.IBMTAPE.SDAJLOAD,DISP=SHR     
 //         DD DSN=RSDEMO.DAJ110.IBMTAPE.SFECLOAD,DISP=SHR     
-//         DD DSN={{ sdsnexit }},DISP=SHR                            
-//         DD DSN={{ sdsnload }},DISP=SHR                            
+//         DD DSN={{ daj_sdsnexit }},DISP=SHR                            
+//         DD DSN={{ daj_sdsnload }},DISP=SHR                            
 //ISPPLIB  DD DSN=RSDEMO.DAJ110.IBMTAPE.SDAJPENU,DISP=SHR     
 //         DD DSN=RSDEMO.DAJ110.IBMTAPE.SFECPENU,DISP=SHR     
 //ISPTLIB  DD DSN=&&TEMP,DISP=(OLD,DELETE,DELETE)             
@@ -95,8 +95,8 @@
     DB2_SUBSYSTEM      IDS2                                          -
     USER_INDICATOR     DAJ                                           -
     DB2_SQLID          DAJUSER                                       -
-    PROFILE_NAME       '{{ profile_name }}' - 
-    PROFILE_CREATOR    {{ profile_creator }} - 
+    PROFILE_NAME       '{{ daj_profile_name }}' - 
+    PROFILE_CREATOR    {{ daj_profile_creator }} - 
     PROFILE_DESCRIPTION ' '                                          -
     EXECUTION_LIB_2    RSDEMO.DAJ110.IBMTAPE.SDAJLOAD                -
     EXECUTION_LIB_4    RSDEMO.DAJ110.IBMTAPE.SFECLOAD                -

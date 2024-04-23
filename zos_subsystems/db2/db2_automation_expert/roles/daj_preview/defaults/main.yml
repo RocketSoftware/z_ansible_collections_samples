@@ -1,9 +1,9 @@
-ssid: IDS2
-profile_name: "ANSIBLE-PREVIEW-REORG"
-profile_creator: "TS5941"
-sdsnload: "DSN.VD10.SDSNLOAD"
-sdsnexit: "DSN.IDS2.SDSNEXIT"
-jobcard: |
-  //{{ ansible_user | upper }}T JOB 01,'DAJ@BULD {{ ssid }}',
+daj_ssid: IDS2
+daj_profile_name: "ANSIBLE-PREVIEW-REORG"
+daj_profile_creator: "TS5941"
+daj_sdsnload: "DSN.VD10.SDSNLOAD"
+daj_sdsnexit: "DSN.IDS2.SDSNEXIT"
+daj_jobcard: |
+  //{{ ansible_user | upper }}T JOB 01,'DAJ@BULD {{ daj_ssid }}',
   // NOTIFY=&SYSUID,CLASS=A,MSGCLASS=X,REGION=0M
 
