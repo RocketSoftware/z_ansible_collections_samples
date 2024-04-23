@@ -1,0 +1,56 @@
+- name: Create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: tempdir
+
+- name: Create JCL from template
+  ansible.builtin.template:
+    src: "dajbuld.jcl.j2"
+    dest: "{{ tempdir.path }}/dajbuld.jcl.bin"
+    mode: "0600"
+
+- name: Convert from ASCII to EBCDIC
+  ibm.ibm_zos_core.zos_encode:
+    src: "{{ tempdir.path }}/dajbuld.jcl.bin"
+    dest: "{{ tempdir.path }}/dajbuld.jcl"
+    encoding:
+      to: IBM-1047
+      from: ISO8859-1
+
+- name: Run utilities
+  ibm.ibm_zos_core.zos_job_submit:
+    src: "{{ tempdir.path }}/dajbuld.jcl"
+    location: USS
+    wait_time_s: 120
+  register: result
+  failed_when: "result.jobs[0].ret_code.msg_code not in ['0000', '0004']"
+
+- name: Get SYSOUT DD
+  ansible.builtin.set_fact:
+    _sysout: "{{ result.jobs[0].ddnames | community.general.json_query(query) | flatten | join('\n')  }}"
+  vars:
+    query: "[?ddname=='SYSOUT'].content"
+
+- name: Print SYSOUT
+  ansible.builtin.debug:
+    msg: 
+      sysout: "{{ _sysout }}"
+    verbosity: 1
+
+- name: extract object names
+  ansible.builtin.set_fact:
+    _sysout2: "{{ _sysout | regex_findall('^ .{8} (?P<type>TS|IX) +(?P<spacename>[A-Z#@\\$0-9]+) +(?P<database>[A-Z#@\\$0-9]+) +(?P<partition>[0-9]+)',multiline=true) }}"
+
+- name: Print list of object names
+  ansible.builtin.debug:
+    msg: "{{ _sysout2 }}"
+    verbosity: 1
+
+- name: convert to dict
+  ansible.builtin.set_fact:
+    daj_objects: "{{ _sysout2 | map('zip', [ 'type', 'spacename', 'database', 'partition' ] ) | map('map', 'reverse') | map('community.general.dict') }}"
+
+- name: Print objects
+  ansible.builtin.debug:
+    msg: "{{ daj_objects }}"
+    verbosity: 0

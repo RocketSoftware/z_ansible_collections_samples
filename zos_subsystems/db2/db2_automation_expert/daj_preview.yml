@@ -1,0 +1,12 @@
+- name: Run Db2 housekeeping
+  hosts: all
+  gather_facts: false
+  environment: "{{ environment_vars }}"
+  tasks:
+    - name: Collect objects
+      ansible.builtin.include_role:
+        name: daj_preview
+      vars:
+        ssid: IDS2
+        profile_name: ANSIBLE-PREVIEW-REORG
+        profile_creator: TS5941
