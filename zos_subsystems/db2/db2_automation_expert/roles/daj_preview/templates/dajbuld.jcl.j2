@@ -94,7 +94,7 @@
   GENERATE_UTILITY_JOB (                                             -
     DB2_SUBSYSTEM      IDS2                                          -
     USER_INDICATOR     DAJ                                           -
-    DB2_SQLID          DAJUSER                                       -
+    DB2_SQLID          {{ ansible_user | upper }} -
     PROFILE_NAME       '{{ daj_profile_name }}' - 
     PROFILE_CREATOR    {{ daj_profile_creator }} - 
     PROFILE_DESCRIPTION ' '                                          -
