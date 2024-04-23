@@ -1,0 +1,26 @@
+- name: Run Db2 utility
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Authenticate with UMS
+      ansible.builtin.include_role:
+        name: ums_login
+
+    - name: Run Db2 utility
+      ansible.builtin.include_role:
+        name: daj_util
+      vars:
+        daj_util_ssid: DSN
+        daj_util_sysname: lpar
+        daj_util_utilityname: COPY
+        daj_util_object_type: TS
+        daj_util_database: DSN8D13A
+        daj_util_object_name: DSN8S13E
+        daj_util_objects: [
+          {
+            "objectType": "{{ daj_util_object_type }}",
+            "databaseName": "{{ daj_util_database_name }}",
+            "objectName": "{{ daj_util_object_name }} "
+          }
+        ]
+        daj_util_verbose: false
