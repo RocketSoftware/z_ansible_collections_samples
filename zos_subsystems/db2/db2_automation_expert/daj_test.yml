@@ -18,7 +18,7 @@
 
     - name: run
       ansible.builtin.shell:
-        cmd: /usr/bin/tracepath -n rs01.rocketsoftware.com
+        cmd: traceroute -n rs01.rocketsoftware.com
       register: _output
 
     - name: show output
