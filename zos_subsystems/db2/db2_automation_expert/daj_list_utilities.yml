@@ -1,5 +1,5 @@
 - name: Get list of supported utilities
-  hosts: all
+  hosts: localhost
   gather_facts: false
   vars:
     ums_server: umsserver.company.com
@@ -16,4 +16,3 @@
         name: daj_list_utilities
       vars:
         daj_util_ssid: DSN1
-        daj_util_sysname: SYS1

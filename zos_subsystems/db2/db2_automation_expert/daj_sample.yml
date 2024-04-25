@@ -1,17 +1,12 @@
 - name: Run Db2 utility
-  hosts: all
+  hosts: localhost
   gather_facts: false
   tasks:
-    - name: Authenticate with UMS
-      ansible.builtin.include_role:
-        name: ums_login
-
     - name: Run Db2 utility
       ansible.builtin.include_role:
         name: daj_util
       vars:
         daj_util_ssid: DSN
-        daj_util_sysname: lpar
         daj_util_utilityname: COPY
         daj_util_objects: [
           {

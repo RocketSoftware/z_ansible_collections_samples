@@ -4,10 +4,36 @@
   when: ums_access_token == ''
   failed_when: ums_access_token == ''
 
+- name: Get Db2 subsystem information
+  ansible.builtin.uri:
+    url: "https://{{ ums_server }}:{{ ums_port }}/ws/policy/subsystems/db2/{{ daj_util_ssid }}"
+    ca_path: "{{ ums_ca_path }}"
+    validate_certs: "{{ ums_validate_certs }}"
+    method: GET
+    status_code: 200
+    headers:
+      Accept: "application/json"
+      Authorization: "Bearer {{ ums_access_token }}"
+  register: output
+
+- name: show Db2 subsystem information
+  ansible.builtin.debug:
+    msg: "{{ output }}"
+    verbosity: 2
+
+- name: save LPAR name
+  ansible.builtin.set_fact:
+    _daj_util_sysname: "{{ output.json.lpar }}"
+
+- name: show LPAR name
+  ansible.builtin.debug:
+    msg: "{{ _daj_util_sysname }}"
+    verbosity: 1
+
 - name: Get list of profiles for utiliuty {{ daj_util_name }}
   ansible.builtin.uri:
     url: "https://{{ ums_server }}:{{ ums_port }}/ws/plugin/db2/automation-expert/utility/\
-      {{ daj_util_sysname }}/subsystem/{{ daj_util_ssid }}/utilities/{{ daj_util_name }}/profiles"
+      {{ _daj_util_sysname }}/subsystem/{{ daj_util_ssid }}/utilities/{{ daj_util_name }}/profiles"
     ca_path: "{{ ums_ca_path }}"
     validate_certs: "{{ ums_validate_certs }}"
     method: GET
