@@ -92,7 +92,7 @@
   ISPSTART PGM(DAJ@BULD)                                      
 //DAJ#DATA DD *                                                       
   GENERATE_UTILITY_JOB (                                             -
-    DB2_SUBSYSTEM      IDS2                                          -
+    DB2_SUBSYSTEM      {{ daj_ssid }} -
     USER_INDICATOR     DAJ                                           -
     DB2_SQLID          {{ ansible_user | upper }} -
     PROFILE_NAME       '{{ daj_profile_name }}' - 
@@ -102,7 +102,7 @@
     EXECUTION_LIB_4    RSDEMO.DAJ110.IBMTAPE.SFECLOAD                -
     DEBUG_MODE         OFF                                           -
     PREVIEW_EXCP_REPORT YES                                          -
-    GEN_TO_DATASET     TS5941.DAJ.BUILD                              -
+    GEN_TO_DATASET     {{ ansible_user | upper }}.DAJ.BUILD -
     GEN_TO_MEMBER      REORG                                         -
                        )                                              
 //*                                                                   

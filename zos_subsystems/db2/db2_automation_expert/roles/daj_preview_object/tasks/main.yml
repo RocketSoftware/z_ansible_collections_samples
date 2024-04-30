@@ -1,0 +1,11 @@
+- name: Collect objects
+  ansible.builtin.include_role:
+    name: daj_preview
+
+- name: check if object need utility
+  ansible.builtin.set_fact:
+    daj_run_utility: "{{ true if ( daj_objects | selectattr( 'type', '==', daj_object_type ) | selectattr( 'database', '==', daj_database_name ) | selectattr( 'spacename', '==', daj_object_name ) | length ) > 0 else false }}"
+
+- name: Run utility on {{ daj_database_name}}.{{ daj_object_name}} of type {{ daj_object_type }} 
+  ansible.builtin.debug:
+    msg: "{{ daj_run_utility }}"

@@ -1,0 +1,11 @@
+daj_ssid: IDS2
+daj_profile_name: "ANSIBLE-PREVIEW-REORG"
+daj_profile_creator: "TS5941"
+daj_sdsnload: "DSN.VD10.SDSNLOAD"
+daj_sdsnexit: "DSN.IDS2.SDSNEXIT"
+daj_jobcard: |
+  //{{ ansible_user | upper }}T JOB 01,'DAJ@BULD {{ ssid }}',
+  // NOTIFY=&SYSUID,CLASS=A,MSGCLASS=X,REGION=0M
+daj_object_type: TS
+daj_database_name: DSN82010
+daj_object_name: EMP
