@@ -1,0 +1,15 @@
+- name: Run Db2 housekeeping
+  hosts: all
+  gather_facts: false
+  environment: "{{ environment_vars }}"
+  tasks:
+    - name: Collect objects
+      ansible.builtin.include_role:
+        name: daj_preview_object
+      vars:
+        daj_ssid: IDS2
+        daj_profile_name: ANSIBLE-PREVIEW-REORG-TS
+        daj_profile_creator: TS5941
+        daj_object_type: TS
+        daj_database_name: GLWDAJ
+        daj_object_name: GLWSSPX
