@@ -1,0 +1,18 @@
+- name: Run Db2 utility
+  hosts: all
+  gather_facts: false
+
+  vars:
+    ums_username: TS5941X
+    daj_file: DAJ1.OUTPUT
+
+  tasks:
+
+    - name: cat
+      ansible.builtin.shell: cat /u/{{ ansible_user | lower }}/{{ daj_file }}
+      register: _output
+
+    - name: show
+      ansible.builtin.debug:
+        msg: "{{ _output.stdout }}"
+
