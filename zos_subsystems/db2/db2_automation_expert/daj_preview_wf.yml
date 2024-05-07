@@ -1,0 +1,37 @@
+- name: Run Db2 housekeeping
+  hosts: all
+  gather_facts: false
+  environment: "{{ environment_vars }}"
+  tasks:
+    - name: Collect objects
+      ansible.builtin.include_role:
+        name: daj_preview
+      vars:
+        daj_ssid: IDS2
+        daj_profile_name: ANSIBLE-PREVIEW-REORG-TS
+        daj_profile_creator: TS5941
+
+    - name: delete dataset
+      ansible.builtin.file:
+        path: "/u/{{ ansible_user | lower }}/DAJ2.OUTPUT"
+        state: absent
+
+    - name: create dataset
+      ansible.builtin.file:
+        path: "/u/{{ ansible_user | lower }}/DAJ2.OUTPUT"
+        state: touch
+
+    - name: write summary to dataset
+      ibm.ibm_zos_core.zos_lineinfile:
+        src: "/u/{{ ansible_user | lower }}/DAJ2.OUTPUT"
+        line: The following objects need REORG
+
+    - name: write summary to dataset
+      ibm.ibm_zos_core.zos_lineinfile:
+        src: "/u/{{ ansible_user | lower }}/DAJ2.OUTPUT"
+        line: "- {{ item.database }}.{{ item.spacename }}"
+      loop: '{{ daj_objects | json_query(''[].{"database": database, "spacename": spacename}'') | unique }}'
+      loop_control:
+       label: "{{ item.spacename }}"
+
+
