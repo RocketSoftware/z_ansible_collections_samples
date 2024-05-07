@@ -8,5 +8,5 @@
         name: daj_preview
       vars:
         daj_ssid: IDS2
-        daj_profile_name: ANSIBLE-PREVIEW-REORG
+        daj_profile_name: ANSIBLE-PREVIEW-REORG-TS
         daj_profile_creator: TS5941
