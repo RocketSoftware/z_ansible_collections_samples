@@ -1,0 +1,19 @@
+# UMS server information
+tems_baseurl: "https://temsserver.company.com:1920/api/v1"
+
+# Username and password to use with TEMS
+# Read from environment variables
+tems_username: '{{ lookup("env", "TEMS_USERNAME") }}'
+tems_password: '{{ lookup("env", "TEMS_PASSWORD") }}'
+
+# Path to PEM file for TEMS Root CA
+# Example 1: Turn on validation and pass Root CA
+# tems_ca_path: "ca/rootca.pem"
+# tems_validate_certs: true
+#
+# Example 2: turn off validation
+# tems_ca_path:
+# tems_validate_certs: false
+#
+tems_ca_path: "path/to/rootca.pem"
+tems_validate_certs: true

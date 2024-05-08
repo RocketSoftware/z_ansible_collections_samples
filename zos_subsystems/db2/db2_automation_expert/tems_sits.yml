@@ -1,0 +1,100 @@
+- name: Get TEMS situations
+  hosts: all
+  gather_facts: false
+  environment: "{{ environment_vars }}"
+  vars:
+    tems_baseurl: "http://rs01.rocketsoftware.com:1167/api/v1"
+    tems_validate_certs: false
+    tems_ca_path: ""
+    tems_username: TS5941X
+    tems_password: watsonx1
+    #tems_filter_originnode: "I9A2:RS01:DB2"
+    #tems_filter_originnode: "I9A2:RS01:DB2"
+    tems_filter_originnode: "I9A2"
+
+  tasks:
+
+    - name: Authenticate with TEMS
+      ansible.builtin.include_role:
+        name: tems_login
+
+    - name: Get TEMS situations
+      ansible.builtin.uri:
+        url: "{{ tems_baseurl }}/situations/status?expand=true"
+        ca_path: "{{ tems_ca_path }}"
+        validate_certs: "{{ tems_validate_certs }}"
+        method: GET
+        status_code: 200
+        headers:
+          Accept: "application/json"
+          Authorization: "Bearer {{ tems_access_token }}"
+      register: output
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ output }}"
+
+    - name: filter
+      ansible.builtin.set_fact:
+        _tems_situations: "{{ output.json | community.general.json_query(query1) | community.general.json_query(query2) }}"
+      vars:
+        query1: "[?contains(ORIGINNODE,`{{ tems_filter_originnode }}`)]"
+        query2: "[?SITNAME!=`MS_Offline`]"
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ _tems_situations }}"
+
+    - name: get sev
+      ansible.builtin.uri:
+        url: "{{ tems_baseurl }}/situations?name={{ item.SITNAME }}"
+        ca_path: "{{ tems_ca_path }}"
+        validate_certs: "{{ tems_validate_certs }}"
+        method: GET
+        status_code: 200
+        headers:
+          Accept: "application/json"
+          Authorization: "Bearer {{ tems_access_token }}"
+      register: output
+      loop: "{{ _tems_situations }}"
+      loop_control:
+        label: "{{ item.SITNAME }}"
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ output }}"
+
+    - name: combine
+      ansible.builtin.set_fact:
+        tems_situations: "{{ tems_situations | default([]) + [ item.item | ansible.builtin.combine(item.json[0]) ] }}"
+      loop: "{{ output.results }}"
+      loop_control:
+        label: "{{ item.item.SITNAME }}"
+
+    - name: Show output
+      ansible.builtin.debug:
+        msg: "{{ tems_situations }}"
+
+    - name: delete dataset
+      ansible.builtin.file:
+        path: "/u/{{ ansible_user | lower }}/TEMS1.OUTPUT"
+        state: absent
+
+    - name: create dataset
+      ansible.builtin.file:
+        path: "/u/{{ ansible_user | lower }}/TEMS1.OUTPUT"
+        state: touch
+
+    - name: write summary to dataset
+      ibm.ibm_zos_core.zos_lineinfile:
+        src: "/u/{{ ansible_user | lower }}/TEMS1.OUTPUT"
+        line: Current open issues on Db2 subsystem {{ tems_filter_originnode }}
+
+    - name: write summary to dataset
+      ibm.ibm_zos_core.zos_lineinfile:
+        src: "/u/{{ ansible_user | lower }}/TEMS1.OUTPUT"
+        line: "- {{ item.FULLNAME | default(item.SITNAME) }}"
+      loop: "{{ tems_situations }}"
+      loop_control:
+       label: "{{ item.SITNAME }}"
+

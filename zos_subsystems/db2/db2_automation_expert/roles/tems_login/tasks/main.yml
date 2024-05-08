@@ -1,0 +1,28 @@
+- name: Verify input
+  ansible.builtin.debug:
+    msg: "Please set environment variables TEMS_USERNAME and TEMS_PASSWORD"
+  when: tems_username == '' or tems_password == ''
+  failed_when: tems_username == '' or tems_password == ''
+
+- name: Authenticate User
+  ansible.builtin.uri:
+    url: "{{ tems_baseurl}}/token"
+    ca_path: "{{ tems_ca_path }}"
+    validate_certs: "{{ tems_validate_certs }}"
+    method: GET
+    force_basic_auth: true
+    url_username: "{{ tems_username }}"
+    url_password: "{{ tems_password }}"
+    status_code: 200
+    headers:
+      Accept: "application/json"
+  register: output
+
+- name: Register bearer token
+  ansible.builtin.set_fact:
+    tems_access_token: "{{ output.json['access_token'] }}"
+
+- name: Show tokens
+  ansible.builtin.debug:
+    msg: "TEMS access token: {{ tems_access_token }}"
+    verbosity: 1
